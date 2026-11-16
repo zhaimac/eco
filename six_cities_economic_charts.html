@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>世界六大城市37年经济与真实生活水平全景对比（1990—2026）</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #111827;
+    --sub: #4b5563;
+    --muted: #9ca3af;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 48px;
+    line-height: 1.5;
+  }
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+  .header-bar {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 22px 26px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    margin-bottom: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .title-group h1 {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .title-group p {
+    font-size: 13.5px;
+    color: var(--sub);
+    margin-top: 4px;
+  }
+  .city-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tab-btn {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--sub);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .tab-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px 26px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    position: relative;
+  }
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 18.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--sub);
+    margin-top: 3px;
+  }
+  .export-btn {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .export-btn:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .legend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #374151;
+    background: #fafafa;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #f0f0f2;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend-swatch {
+    width: 16px;
+    height: 3.5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .chart-wrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+  svg.chart-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+  }
+  .controls-box {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .slider-item label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--sub);
+    margin-bottom: 5px;
+  }
+  .slider-item input[type=range] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .kpi-box {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .kpi-label {
+    font-size: 12px;
+    color: var(--sub);
+  }
+  .kpi-val {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 3px;
+    color: var(--text);
+  }
+  .kpi-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  #tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(17, 24, 39, 0.94);
+    color: #fff;
+    padding: 10px 13px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+    z-index: 9999;
+    display: none;
+    min-width: 190px;
+  }
+  .footer-note {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-bar">
+    <div class="title-group">
+      <h1>世界六大城市 37 年名义价格指数与“真实生活水平效用模型”全景对比（1990—2026）</h1>
+      <p>涵盖太原、北京、上海、深圳、东京、芝加哥 · 统一以 1990 年 = 100 为基准</p>
+    </div>
+    <div class="city-tabs" id="cityTabs"></div>
+  </div>
+
+  <div class="kpi-strip" id="kpiStrip"></div>
+
+  <div class="grid">
+    <!-- 图表一：名义累计增长指数 -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title" id="chart1Title"></div>
+          <div class="card-subtitle" id="chart1Sub"></div>
+        </div>
+        <button class="export-btn" onclick="exportSVG('svg1', 'chart1')">导出高清 PNG</button>
+      </div>
+      <div class="legend-list" id="legend1"></div>
+      <div class="chart-wrap">
+        <svg id="svg1" class="chart-svg" viewBox="0 0 960 500"></svg>
+      </div>
+    </div>
+
+    <!-- 图表二：Cobb-Douglas 真实生活水平效用模型 -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title" id="chart2Title"></div>
+          <div class="card-subtitle" id="chart2Sub"></div>
+        </div>
+        <button class="export-btn" onclick="exportSVG('svg2', 'chart2')">导出高清 PNG</button>
+      </div>
+      <div class="legend-list" id="legend2"></div>
+      <div class="chart-wrap">
+        <svg id="svg2" class="chart-svg" viewBox="0 0 960 470"></svg>
+      </div>
+      <div class="controls-box">
+        <div class="slider-item">
+          <label><span>一般消费与工业科技权重</span><span id="w1Val">40%</span></label>
+          <input type="range" id="w1Slider" min="10" max="70" value="40">
+        </div>
+        <div class="slider-item">
+          <label><span>住房面积购买力权重</span><span id="w2Val">25%</span></label>
+          <input type="range" id="w2Slider" min="5" max="65" value="25">
+        </div>
+        <div class="slider-item">
+          <label><span>饮食餐饮购买力权重 (自动配平)</span><span id="w3Val">35%</span></label>
+          <input type="range" id="w3Slider" min="5" max="65" value="35" disabled>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    说明：统一采用本币名义值（1990年=100）建模。中国四城（太原、北京、上海、深圳）1990年住房均价参照早期商品房/房改成本价折算；东京体现“失落三十年”通缩周期与近年核心区回暖特征；芝加哥体现美国中西部核心都市温和通胀与科技购买力跃迁。
+  </div>
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+const YEARS = [1990, 1995, 2000, 2005, 2008, 2010, 2015, 2019, 2020, 2023, 2026];
+
+const CITIES = {
+  taiyuan: {
+    name: "太原",
+    en: "Taiyuan",
+    currency: "元",
+    note: "原图基准城市：收入稳健增长，房价于2020年见顶后温和回调，本土小吃涨幅约13~17倍。",
+    kpis: [
+      { label: "2026 城镇可支配收入", val: "52,500 元", note: "1990年 1,402 元 (涨 37.44 倍)" },
+      { label: "2026 住宅均价", val: "9,100 元/㎡", note: "2020峰值 11,800 元 (涨 15.17 倍)" },
+      { label: "2026 国家综合 CPI", val: "330", note: "1990年=100 (累计涨 3.30 倍)" },
+      { label: "综合生活水平指数", val: "448.0", note: "较1990年提升 +348.0%" }
+    ],
+    series1: [
+      { name: "全国综合CPI（官方基准，涨3.30倍）", short: "2026全国CPI", color: "#2563eb", data: [100, 175, 192, 203, 226, 232, 268, 296, 304, 318, 330] },
+      { name: "太原住宅均价（600元/㎡→峰值11,800→2026年9,100元/㎡，涨15.17倍）", short: "2026房价", color: "#d97706", peakIdx: 8, peakLabel: "2020房价峰值: 1967", data: [100, 210, 310, 480, 720, 950, 1280, 1850, 1967, 1680, 1517] },
+      { name: "太原城镇人均可支配收入（1,402元→52,500元，涨37.44倍）", short: "2026城镇收入", color: "#7c3aed", data: [100, 265, 435, 760, 1080, 1320, 2080, 2680, 2810, 3290, 3744] },
+      { name: "太原头脑（1.5元→25.0元，涨16.67倍）", short: "2026头脑", color: "#c026d3", data: [100, 220, 340, 520, 740, 880, 1200, 1480, 1540, 1620, 1667] },
+      { name: "太原过油肉（4.0元→54.0元，涨13.50倍）", short: "2026过油肉", color: "#0f766e", data: [100, 215, 310, 460, 650, 780, 1050, 1240, 1280, 1320, 1350] },
+      { name: "鸡蛋灌饼（0.35元→6.0元，涨17.14倍）", short: "2026灌饼", color: "#15803d", data: [100, 230, 360, 550, 780, 920, 1260, 1550, 1600, 1670, 1714] }
+    ]
+  },
+  beijing: {
+    name: "北京",
+    en: "Beijing",
+    currency: "元",
+    note: "首都核心都市：收入基数高且增长稳健，核心住宅均价涨幅极高，餐饮呈双轨分化。",
+    kpis: [
+      { label: "2026 城镇可支配收入", val: "94,800 元", note: "1990年 1,787 元 (涨 53.05 倍)" },
+      { label: "2026 住宅均价", val: "56,500 元/㎡", note: "2021峰值 65,000 元 (涨 35.31 倍)" },
+      { label: "2026 国家综合 CPI", val: "330", note: "1990年=100 (累计涨 3.30 倍)" },
+      { label: "综合生活水平指数", val: "562.4", note: "默认权重下较1990年提升 +462.4%" }
+    ],
+    series1: [
+      { name: "全国综合CPI（官方基准，涨3.30倍）", short: "2026全国CPI", color: "#2563eb", data: [100, 175, 192, 203, 226, 232, 268, 296, 304, 318, 330] },
+      { name: "北京住宅均价（1,600元/㎡→峰值65,000→2026年56,500元/㎡，涨35.31倍）", short: "2026房价", color: "#d97706", peakIdx: 8, peakLabel: "2020-21高位: 3980", data: [100, 240, 320, 490, 920, 1450, 2480, 3820, 3980, 3780, 3531] },
+      { name: "北京城镇人均可支配收入（1,787元→94,800元，涨53.05倍）", short: "2026城镇收入", color: "#7c3aed", data: [100, 328, 579, 988, 1384, 1627, 2956, 4132, 4230, 4810, 5305] },
+      { name: "老北京炸酱面（2.0元→32.0元，涨16.00倍）", short: "2026炸酱面", color: "#c026d3", data: [100, 230, 350, 520, 740, 880, 1220, 1460, 1500, 1560, 1600] },
+      { name: "便宜坊/全聚德烤鸭（38元→298元，涨7.84倍）", short: "2026烤鸭", color: "#0f766e", data: [100, 180, 240, 320, 440, 520, 660, 740, 750, 770, 784] },
+      { name: "街边煎饼果子（0.5元→9.0元，涨18.00倍）", short: "2026煎饼", color: "#15803d", data: [100, 240, 380, 560, 800, 960, 1320, 1600, 1660, 1740, 1800] }
+    ]
+  },
+  shanghai: {
+    name: "上海",
+    en: "Shanghai",
+    currency: "元",
+    note: "长三角金融中心：人均可支配收入全国领跑，核心住宅均价涨幅与收入基本同步。",
+    kpis: [
+      { label: "2026 城镇可支配收入", val: "96,200 元", note: "1990年 2,182 元 (涨 44.09 倍)" },
+      { label: "2026 住宅均价", val: "61,800 元/㎡", note: "2021峰值 66,500 元 (涨 41.20 倍)" },
+      { label: "2026 国家综合 CPI", val: "330", note: "1990年=100 (累计涨 3.30 倍)" },
+      { label: "综合生活水平指数", val: "485.1", note: "默认权重下较1990年提升 +385.1%" }
+    ],
+    series1: [
+      { name: "全国综合CPI（官方基准，涨3.30倍）", short: "2026全国CPI", color: "#2563eb", data: [100, 175, 192, 203, 226, 232, 268, 296, 304, 318, 330] },
+      { name: "上海住宅均价（1,500元/㎡→峰值66,500→2026年61,800元/㎡，涨41.20倍）", short: "2026房价", color: "#d97706", peakIdx: 8, peakLabel: "2020-21高位: 4250", data: [100, 220, 270, 520, 980, 1520, 2650, 4050, 4250, 4320, 4120] },
+      { name: "上海城镇人均可支配收入（2,182元→96,200元，涨44.09倍）", short: "2026城镇收入", color: "#7c3aed", data: [100, 329, 537, 855, 1222, 1459, 2427, 3374, 3495, 3980, 4409] },
+      { name: "小杨/大壶春生煎（0.8元/两→14.0元/两，涨17.50倍）", short: "2026生煎", color: "#c026d3", data: [100, 235, 360, 540, 760, 910, 1280, 1560, 1610, 1690, 1750] },
+      { name: "本帮红烧肉例牌（8.0元→88.0元，涨11.00倍）", short: "2026红烧肉", color: "#0f766e", data: [100, 200, 290, 410, 560, 680, 890, 1020, 1040, 1080, 1100] },
+      { name: "四大金刚·大饼油条（0.4元→6.5元，涨16.25倍）", short: "2026大饼油条", color: "#15803d", data: [100, 225, 340, 510, 720, 870, 1210, 1460, 1510, 1580, 1625] }
+    ]
+  },
+  shenzhen: {
+    name: "深圳",
+    en: "Shenzhen",
+    currency: "元",
+    note: "特区奇迹样本：1990年起点基数已领先全国，经历四十年高速扩张，房价弹性全国最高。",
+    kpis: [
+      { label: "2026 城镇可支配收入", val: "85,600 元", note: "1990年 4,128 元 (涨 20.74 倍)" },
+      { label: "2026 住宅均价", val: "58,500 元/㎡", note: "2021峰值 75,000 元 (涨 30.79 倍)" },
+      { label: "2026 国家综合 CPI", val: "330", note: "1990年=100 (累计涨 3.30 倍)" },
+      { label: "综合生活水平指数", val: "305.8", note: "因1990起点极高，累计倍数为3.06倍" }
+    ],
+    series1: [
+      { name: "全国综合CPI（官方基准，涨3.30倍）", short: "2026全国CPI", color: "#2563eb", data: [100, 175, 192, 203, 226, 232, 268, 296, 304, 318, 330] },
+      { name: "深圳住宅均价（1,900元/㎡→峰值75,000→2026年58,500元/㎡，涨30.79倍）", short: "2026房价", color: "#d97706", peakIdx: 8, peakLabel: "2020-21高位: 3850", data: [100, 260, 295, 420, 780, 1180, 2250, 3480, 3850, 3350, 3079] },
+      { name: "深圳城镇人均可支配收入（4,128元→85,600元，涨20.74倍）", short: "2026城镇收入", color: "#7c3aed", data: [100, 308, 522, 695, 648, 784, 1081, 1515, 1571, 1858, 2074] },
+      { name: "广式烧鹅饭/叉烧饭（3.5元→36.0元，涨10.29倍）", short: "2026烧鹅饭", color: "#c026d3", data: [100, 195, 275, 380, 510, 610, 810, 940, 965, 1000, 1029] },
+      { name: "早茶虾饺皇一笼（4.0元→38.0元，涨9.50倍）", short: "2026虾饺皇", color: "#0f766e", data: [100, 190, 260, 355, 470, 560, 740, 865, 890, 925, 950] },
+      { name: "潮汕牛肉丸粿条（2.5元→28.0元，涨11.20倍）", short: "2026牛肉粿条", color: "#15803d", data: [100, 205, 290, 410, 550, 660, 880, 1020, 1050, 1090, 1120] }
+    ]
+  },
+  tokyo: {
+    name: "东京",
+    en: "Tokyo",
+    currency: "日元",
+    note: "成熟发达经济体样本：1990年恰逢泡沫经济巅峰，历经三十年通缩与房价深度去泡沫，2023年后随通胀与日元贬值温和回升。",
+    kpis: [
+      { label: "2026 家庭/人均名义收入指数", val: "114", note: "1990年=100 (名义微涨 14%)" },
+      { label: "2026 东京圈住宅均价指数", val: "118", note: "1990泡沫顶=100，2002低谷曾跌至52" },
+      { label: "2026 日本综合 CPI", val: "112", note: "37年累计温和通胀 12%" },
+      { label: "综合生活水平指数", val: "146.2", note: "主要得益于工业科技降价与住宅去泡沫" }
+    ],
+    series1: [
+      { name: "日本综合CPI（官方基准，涨1.12倍）", short: "2026日本CPI", color: "#2563eb", data: [100, 107, 108, 105, 106, 104, 107, 109, 109, 110, 112] },
+      { name: "东京圈住宅均价（1990泡沫巅峰→2002腰斩→2026回升，涨1.18倍）", short: "2026房价", color: "#d97706", peakIdx: 0, peakLabel: "1990泡沫顶点: 100", data: [100, 66, 56, 54, 62, 58, 68, 79, 82, 104, 118] },
+      { name: "东京都名义人均收入（停滞三十年后近年春斗加薪，涨1.14倍）", short: "2026名义收入", color: "#7c3aed", data: [100, 108, 106, 101, 100, 97, 99, 103, 102, 108, 114] },
+      { name: "东京酱油拉面（550日元→980日元，涨1.78倍）", short: "2026拉面", color: "#c026d3", data: [100, 109, 115, 118, 124, 125, 136, 148, 152, 168, 178] },
+      { name: "吉野家牛丼并盛（400日元→498日元，涨1.25倍）", short: "2026牛丼", color: "#0f766e", data: [100, 100, 100, 73, 95, 95, 95, 97, 97, 112, 125] },
+      { name: "银座/筑地寿司午市套餐（2,500日元→4,200日元，涨1.68倍）", short: "2026寿司套餐", color: "#15803d", data: [100, 105, 108, 112, 116, 118, 128, 140, 142, 156, 168] }
+    ]
+  },
+  chicago: {
+    name: "芝加哥",
+    en: "Chicago",
+    currency: "美元",
+    note: "美国中西部核心都市：住房供应充足，房价未出现沿海硅谷式暴涨，名义收入稳步跑赢餐饮与整体通胀。",
+    kpis: [
+      { label: "2026 都会区家庭中位收入", val: "$98,500", note: "1990年 $35,200 (涨 2.80 倍)" },
+      { label: "2026 芝加哥住宅中位价", val: "$378,000", note: "1990年 $112,000 (涨 3.38 倍)" },
+      { label: "2026 美国城市 CPI", val: "248", note: "1990年=100 (37年累计涨 2.48 倍)" },
+      { label: "综合生活水平指数", val: "174.5", note: "工业科技购买力大幅提升，餐饮通胀最明显" }
+    ],
+    series1: [
+      { name: "美国城市综合CPI（BLS基准，涨2.48倍）", short: "2026美国CPI", color: "#2563eb", data: [100, 117, 132, 149, 165, 167, 181, 196, 198, 233, 248] },
+      { name: "芝加哥都会区住宅中位价（$112k→2007高点→2012谷底→$378k，涨3.38倍）", short: "2026房价", color: "#d97706", peakIdx: 4, peakLabel: "2008次贷前夕: 228", data: [100, 122, 156, 215, 228, 182, 198, 238, 255, 312, 338] },
+      { name: "芝加哥都会区名义家庭收入（$35,200→$98,500，涨2.80倍）", short: "2026名义收入", color: "#7c3aed", data: [100, 119, 146, 162, 174, 171, 192, 221, 226, 261, 280] },
+      { name: "芝加哥深盘披萨 Deep Dish（$14.5→$38.0，涨2.62倍）", short: "2026深盘披萨", color: "#c026d3", data: [100, 115, 130, 148, 164, 169, 188, 212, 218, 248, 262] },
+      { name: "经典热狗套餐 Chicago Dog（$2.25→$6.80，涨3.02倍）", short: "2026热狗套餐", color: "#0f766e", data: [100, 118, 136, 156, 175, 182, 208, 238, 246, 285, 302] },
+      { name: "市中心牛排馆主菜 Steak（$24.0→$76.0，涨3.17倍）", short: "2026牛排主菜", color: "#15803d", data: [100, 120, 140, 165, 186, 192, 222, 254, 262, 298, 317] }
+    ]
+  }
+};
+
+let currentCityKey = "taiyuan";
+let w1 = 0.40, w2 = 0.25, w3 = 0.35;
+
+function initTabs() {
+  const container = document.getElementById("cityTabs");
+  container.innerHTML = "";
+  Object.keys(CITIES).forEach(key => {
+    const btn = document.createElement("button");
+    btn.className = "tab-btn" + (key === currentCityKey ? " active" : "");
+    btn.textContent = CITIES[key].name;
+    btn.onclick = () => {
+      currentCityKey = key;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderAll();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function computeUtilitySeries(cityObj) {
+  const cpi = cityObj.series1[0].data;
+  const house = cityObj.series1[1].data;
+  const inc = cityObj.series1[2].data;
+  const food1 = cityObj.series1[3].data;
+  const food2 = cityObj.series1[4].data;
+  const food3 = cityObj.series1[5].data;
+
+  // 工业科技与一般消费品：名义收入 / 科技加权平减指数（工业科技品37年相对大幅降价）
+  const techFactor = [1.0, 0.92, 0.78, 0.62, 0.54, 0.49, 0.41, 0.36, 0.35, 0.34, 0.33];
+  const genPower = YEARS.map((_, i) => {
+    const deflator = (cpi[i] / 100) * techFactor[i];
+    return Math.round((inc[i] / deflator) * 10) / 10;
+  });
+
+  const housePower = YEARS.map((_, i) => {
+    return Math.round(((inc[i] / house[i]) * 100) * 10) / 10;
+  });
+
+  const foodPower = YEARS.map((_, i) => {
+    const avgFood = (food1[i] + food2[i] + food3[i]) / 3;
+    return Math.round(((inc[i] / avgFood) * 100) * 10) / 10;
+  });
+
+  const totalUtility = YEARS.map((_, i) => {
+    const u = Math.pow(genPower[i], w1) * Math.pow(housePower[i], w2) * Math.pow(foodPower[i], w3);
+    return Math.round(u * 10) / 10;
+  });
+
+  const pct = (arr) => {
+    const p = ((arr[arr.length - 1] - 100)).toFixed(1);
+    return (p >= 0 ? "+" : "") + p + "%";
+  };
+
+  return [
+    { name: `一般消费品与工业科技购买力（权重${Math.round(w1*100)}%，${pct(genPower)}）`, short: "一般消费与科技", color: "#2563eb", data: genPower },
+    { name: `住房面积购买力（权重${Math.round(w2*100)}%，${pct(housePower)}）`, short: "住房购买力", color: "#d97706", data: housePower },
+    { name: `综合真实生活水平指数（Cobb-Douglas总效用，${pct(totalUtility)}）`, short: "综合生活水平", color: "#7c3aed", isMain: true, data: totalUtility },
+    { name: `饮食餐饮购买力（权重${Math.round(w3*100)}%，${pct(foodPower)}）`, short: "饮食购买力", color: "#c026d3", data: foodPower }
+  ];
+}
+
+function renderKPIs(cityObj, uSeries) {
+  const strip = document.getElementById("kpiStrip");
+  const totalU = uSeries[2].data[uSeries[2].data.length - 1];
+  const diffPct = ((totalU - 100)).toFixed(1);
+  const mult = (totalU / 100).toFixed(2);
+
+  const cards = [
+    cityObj.kpis[0],
+    cityObj.kpis[1],
+    cityObj.kpis[2],
+    {
+      label: "当前权重下·综合真实生活水平",
+      val: `${totalU} (${mult}倍)`,
+      note: `较1990年基准变化 ${diffPct >= 0 ? "+" : ""}${diffPct}%`
+    }
+  ];
+
+  strip.innerHTML = cards.map(c => `
+    <div class="kpi-box">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-val">${c.val}</div>
+      <div class="kpi-note">${c.note}</div>
+    </div>
+  `).join("");
+}
+
+function drawLineChart(svgId, seriesList, yAxisTitle, isUtilityChart = false) {
+  const svg = document.getElementById(svgId);
+  const W = 960, H = isUtilityChart ? 470 : 500;
+  const pad = { top: 36, right: 155, bottom: 52, left: 78 };
+  const plotW = W - pad.left - pad.right;
+  const plotH = H - pad.top - pad.bottom;
+
+  let maxVal = 0;
+  seriesList.forEach(s => s.data.forEach(v => { if (v > maxVal) maxVal = v; }));
+  const niceMax = Math.ceil((maxVal * 1.12) / 50) * 50;
+
+  const xScale = (year) => pad.left + ((year - 1990) / (2026 - 1990)) * plotW;
+  const yScale = (val) => pad.top + plotH - (val / niceMax) * plotH;
+
+  let html = `<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`;
+
+  // 水平网格线
+  const tickCount = 6;
+  for (let i = 0; i <= tickCount; i++) {
+    const val = Math.round((niceMax / tickCount) * i);
+    const y = yScale(val);
+    html += `<line x1="${pad.left}" y1="${y}" x2="${W - pad.right}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>`;
+    html += `<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="12" fill="#6b7280">${val.toLocaleString()}</text>`;
+  }
+
+  // 垂直年份网格线
+  const xTicks = [1990, 1995, 2000, 2005, 2010, 2015, 2020, 2025];
+  xTicks.forEach(yr => {
+    const x = xScale(yr);
+    html += `<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top + plotH}" stroke="#e5e7eb" stroke-width="1"/>`;
+    html += `<text x="${x}" y="${pad.top + plotH + 22}" text-anchor="middle" font-size="12.5" fill="#4b5563">${yr}</text>`;
+  });
+
+  // 坐标轴标题
+  html += `<text x="${pad.left + plotW / 2}" y="${H - 10}" text-anchor="middle" font-size="13" font-weight="600" fill="#374151">年份 (Year)</text>`;
+  html += `<text x="20" y="${pad.top + plotH / 2}" text-anchor="middle" font-size="13" font-weight="600" fill="#374151" transform="rotate(-90, 20, ${pad.top + plotH / 2})">${yAxisTitle}</text>`;
+
+  // 1990 起点标注
+  const y100 = yScale(100);
+  html += `<circle cx="${xScale(1990)}" cy="${y100}" r="4.5" fill="#111827"/>`;
+  html += `<text x="${xScale(1990) + 8}" y="${y100 + 16}" font-size="12" font-weight="600" fill="#374151">1990共同起点 (100)</text>`;
+
+  // 收集终点标签用于防重叠调整
+  const endLabels = seriesList.map((s, idx) => {
+    const lastVal = s.data[s.data.length - 1];
+    return {
+      idx,
+      y: yScale(lastVal),
+      text: `${s.short}: ${Math.round(lastVal)}`,
+      color: s.color
+    };
+  }).sort((a, b) => a.y - b.y);
+
+  for (let i = 1; i < endLabels.length; i++) {
+    if (endLabels[i].y - endLabels[i - 1].y < 16) {
+      endLabels[i].y = endLabels[i - 1].y + 16;
+    }
+  }
+
+  // 绘制折线与数据点
+  seriesList.forEach((s, sIdx) => {
+    const pts = YEARS.map((yr, i) => `${xScale(yr).toFixed(1)},${yScale(s.data[i]).toFixed(1)}`).join(" ");
+    const strokeW = s.isMain || sIdx === 2 ? 3.2 : 2.5;
+    html += `<polyline fill="none" stroke="${s.color}" stroke-width="${strokeW}" stroke-linecap="round" stroke-linejoin="round" points="${pts}"/>`;
+
+    if (s.peakIdx !== undefined && s.peakLabel) {
+      const px = xScale(YEARS[s.peakIdx]);
+      const py = yScale(s.data[s.peakIdx]);
+      html += `<circle cx="${px}" cy="${py}" r="4.5" fill="${s.color}" stroke="#fff" stroke-width="1.5"/>`;
+      html += `<text x="${px}" y="${py - 10}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${s.color}">${s.peakLabel}</text>`;
+    }
+
+    YEARS.forEach((yr, i) => {
+      const cx = xScale(yr);
+      const cy = yScale(s.data[i]);
+      html += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="${s.color}" stroke="#fff" stroke-width="1.2"
+        onmouseenter="showTip(event, ${yr}, '${s.short}', ${s.data[i]}, '${s.color}')"
+        onmouseleave="hideTip()" style="cursor:pointer;"/>`;
+    });
+  });
+
+  // 绘制右侧终点标签
+  const xEnd = xScale(2026) + 8;
+  endLabels.forEach(lbl => {
+    html += `<text x="${xEnd}" y="${lbl.y + 4}" font-size="12" font-weight="700" fill="${lbl.color}">${lbl.text}</text>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+function showTip(evt, year, name, val, color) {
+  const tip = document.getElementById("tooltip");
+  const mult = (val / 100).toFixed(2);
+  tip.innerHTML = `
+    <div style="font-weight:700;margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:3px;">${CITIES[currentCityKey].name} · ${year} 年</div>
+    <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px;"></span>${name}</div>
+    <div style="margin-top:3px;font-size:13.5px;font-weight:700;">指数：${val} <span style="font-weight:400;font-size:11.5px;color:#d1d5db;">(1990年的 ${mult} 倍)</span></div>
+  `;
+  tip.style.display = "block";
+  tip.style.left = Math.min(window.innerWidth - 220, evt.clientX + 14) + "px";
+  tip.style.top = (evt.clientY - 16) + "px";
+}
+
+function hideTip() {
+  document.getElementById("tooltip").style.display = "none";
+}
+
+function renderAll() {
+  const cityObj = CITIES[currentCityKey];
+  const uSeries = computeUtilitySeries(cityObj);
+
+  document.getElementById("chart1Title").textContent = `${cityObj.name}城镇收入、住宅房价、三类餐饮与CPI 37年累计增长指数全景对比（1990年 = 100）`;
+  document.getElementById("chart1Sub").textContent = cityObj.note;
+  document.getElementById("legend1").innerHTML = cityObj.series1.map(s => `
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:${s.color}"></span>
+      <span>${s.name}</span>
+    </div>
+  `).join("");
+
+  document.getElementById("chart2Title").textContent = `${cityObj.name}城镇居民“真实生活水平效用模型”量化测算（1990年 = 100）`;
+  document.getElementById("chart2Sub").textContent = `基于 Cobb-Douglas 效用函数动态合成（当前权重：一般消费与科技 ${Math.round(w1*100)}% / 住房 ${Math.round(w2*100)}% / 饮食 ${Math.round(w3*100)}%）`;
+  document.getElementById("legend2").innerHTML = uSeries.map(s => `
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:${s.color}"></span>
+      <span>${s.name}</span>
+    </div>
+  `).join("");
+
+  renderKPIs(cityObj, uSeries);
+  drawLineChart("svg1", cityObj.series1, "累计增长指数 (1990年=100)", false);
+  drawLineChart("svg2", uSeries, "真实购买力指数 (1990年=100)", true);
+}
+
+// 权重滑块联动
+const s1 = document.getElementById("w1Slider");
+const s2 = document.getElementById("w2Slider");
+const s3 = document.getElementById("w3Slider");
+
+function updateWeights() {
+  let v1 = parseInt(s1.value, 10);
+  let v2 = parseInt(s2.value, 10);
+  if (v1 + v2 > 95) {
+    v2 = 95 - v1;
+    s2.value = v2;
+  }
+  let v3 = 100 - v1 - v2;
+  s3.value = v3;
+  w1 = v1 / 100;
+  w2 = v2 / 100;
+  w3 = v3 / 100;
+  document.getElementById("w1Val").textContent = v1 + "%";
+  document.getElementById("w2Val").textContent = v2 + "%";
+  document.getElementById("w3Val").textContent = v3 + "%";
+  renderAll();
+}
+s1.addEventListener("input", updateWeights);
+s2.addEventListener("input", updateWeights);
+
+// 高清 PNG 导出
+function exportSVG(svgId, suffix) {
+  const svgEl = document.getElementById(svgId);
+  const serializer = new XMLSerializer();
+  const svgStr = serializer.serializeToString(svgEl);
+  const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function() {
+    const scale = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = 960 * scale;
+    canvas.height = (suffix === "chart1" ? 500 : 470) * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+    const a = document.createElement("a");
+    a.download = `${CITIES[currentCityKey].en}_${suffix}_1990_2026.png`;
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  };
+  img.src = url;
+}
+
+initTabs();
+renderAll();
+</script>
+</body>
+</html>
